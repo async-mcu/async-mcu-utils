@@ -52,10 +52,6 @@ namespace async {
                 return Duration(value_ms - other.value_ms);
             }
 
-            long get() {
-                return this->value_ms;
-            }
-
             /**
              * @brief Get the duration in the specified time unit.
              * @param type Time unit (default: MILLIS). One of: MICRO, MILLIS, SECONDS, etc.
