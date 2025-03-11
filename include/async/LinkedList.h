@@ -1,293 +1,119 @@
+/**
+ * @class Node
+ * @brief Represents a node in the linked list.
+ * @tparam T The type of data stored in the node.
+ */
 template <typename T>
-class ListNode {
+class Node {
 public:
-    T data;
-    ListNode* next;
+    T data;         // Data stored in the node
+    Node* next;     // Pointer to the next node
 
-    ListNode(T value) : data(value), next(nullptr) {}
+    /**
+     * @brief Constructor for the Node class.
+     * @param data The data to be stored in the node.
+     */
+    Node(T data) : data(data), next(nullptr) {}
 };
 
 /**
- * @brief A singly-linked list.
- * @tparam T - the type of the value to be stored in the list
-*/
+ * @class LinkedList
+ * @brief Represents a singly linked list.
+ * @tparam T The type of data stored in the list.
+ */
 template <typename T>
 class LinkedList {
 private:
-    ListNode<T>* head;
-    size_t Size;
+    Node<T>* head;  // Pointer to the head of the list
+
 public:
-class ForwardIterator {
-    private:
-        ListNode<T>* current;
-    public:
-        /**
-         * @brief Instantiate a new ForwardIterator object
-         * @param start - the node to start iterating from
-        */
-        ForwardIterator(ListNode<T>* start) : current(start) {}
-
-        /**
-         * @brief Dereference operator.
-         * @return the value of the current node
-        */
-        T& operator*() {
-            return current->data;
-        }
- 
-        /**
-         * @brief Not equal operator.
-         * @param other - the iterator to compare with
-         * @return true if the iterators are not equal, false otherwise
-        */
-        bool operator!=(const ForwardIterator& other) const {
-            return current != other.current;
-        }
-
-        /**
-         * @brief Prefix increment operator.
-         * @return the iterator after incrementing
-        */
-        ForwardIterator& operator++() {
-            if (current) current = current->next;
-            return *this;
-        }
-    };
     /**
-     * @brief Instantiate a new LinkedList object
-     * 
-    */
-    LinkedList() : head(nullptr), Size(0) {}
+     * @brief Constructor for the LinkedList class.
+     * Initializes an empty list.
+     */
+    LinkedList() : head(nullptr) {}
 
     /**
-     * @brief Destructor
-     * @details Deletes all nodes in the list.
-     * 
-    */
+     * @brief Destructor for the LinkedList class.
+     * Frees all dynamically allocated memory for the nodes.
+     */
     ~LinkedList() {
-        clear();
+        Node<T>* current = head;
+        Node<T>* nextNode;
+        while (current != nullptr) {
+            nextNode = current->next;
+            delete current;
+            current = nextNode;
+        }
     }
 
     /**
-     * @brief Append an element to the end of the list
-     * @param value - the value to be appended
-     * 
-     * @details Creates a new node with the given value and appends it to the end of the list.
-    */
-    void append(const T& value) {
-        ListNode<T>* newNode = new ListNode<T>(value);
-        if (!head) {
+     * @brief Adds an element to the end of the list.
+     * @param data The data to be added.
+     */
+    void append(T data) {
+        Node<T>* newNode = new Node<T>(data);
+        if (head == nullptr) {
             head = newNode;
         } else {
-            ListNode<T>* current = head;
-            while (current->next) {
-                current = current->next;
+            Node<T>* temp = head;
+            while (temp->next != nullptr) {
+                temp = temp->next;
             }
-            current->next = newNode;
+            temp->next = newNode;
         }
-        Size++;
     }
 
     /**
-     * @brief Prepend an element to the beginning of the list
-     * @param value - the value to be prepended
-     * 
-     * @details Creates a new node with the given value and prepends it to the beginning of the list.
-    */
-    void prepend(const T& value) {
-        ListNode<T>* newNode = new ListNode<T>(value);
+     * @brief Adds an element to the beginning of the list.
+     * @param data The data to be added.
+     */
+    void prepend(T data) {
+        Node<T>* newNode = new Node<T>(data);
         newNode->next = head;
         head = newNode;
-        Size++;
     }
 
     /**
-     * @brief Insert an element at a random position
-     * @param value - the value to be inserted
-     * 
-     * @details Creates a new node with the given value and inserts it at a random position in the list.
-     * If the random position is 0, the value is prepended to the list.
-     * If the random position is greater than or equal to the size of the list, the value is appended to the list.
-     * Otherwise, the value is inserted at the random position.
-    */
-    void insert(const T& value){
-        int randomNum = random(0, Size);
-        if (randomNum == 0) {
-            prepend(value);
-        } else if (randomNum >= Size) {
-            append(value);
-        } else {
-            ListNode<T>* newNode = new ListNode<T>(value);
-            ListNode<T>* current = head;
-            for (size_t i = 1; i < randomNum; i++) {
-                current = current->next;
-            }
-            newNode->next = current->next;
-            current->next = newNode;
-            
-            Size++;
-        }
-    }
-    // Insert an element at a specific position
-    /**
-     * @brief Insert an element at a specific position
-     * @param value - the value to be inserted
-     * @param position - the position to insert the value at
-     * 
-     * @details Creates a new node with the given value and inserts it at the given position in the list.
-     * If the position is 0, the value is prepended to the list.
-     * If the position is greater than or equal to the size of the list, the value is appended to the list.
-     * Otherwise, the value is inserted at the given position.
-    */
-    void insert(const T& value, size_t position) {
-        if (position == 0) {
-            prepend(value);
-        } else if (position >= size) {
-            append(value);
-        } else {
-            ListNode<T>* newNode = new ListNode<T>(value);
-            ListNode<T>* current = head;
-            for (size_t i = 1; i < position; i++) {
-                current = current->next;
-            }
-            newNode->next = current->next;
-            current->next = newNode;
-            Size++;
-        }
-    }
-
-    /**
-     * @brief Remove an element at a specific position
-     * @param index - the position of the element to remove
-     * 
-     * @details Removes the element at the given position in the list.
-     * If the position is 0, the first element is removed.
-     * If the position is greater than or equal to the size of the list, nothing happens.
-     * Otherwise, the element at the given position is removed.
-    */
-    void remove(const int index){
-        if(index == 0){
-            ListNode<T>* temp = head;
-            head = head->next;
-            delete temp;
-            Size--;
+     * @brief Removes the first occurrence of an element from the list.
+     * @param data The data to be removed.
+     */
+    void remove(T data) {
+        if (head == nullptr) {
             return;
         }
-        ListNode<T>* current = head;
-        for(int i = 0; i < index - 1; i++){
+
+        // If the element to be removed is the head
+        if (head->data == data) {
+            Node<T>* temp = head;
+            head = head->next;
+            delete temp;
+            return;
+        }
+
+        Node<T>* current = head;
+        while (current->next != nullptr && current->next->data != data) {
             current = current->next;
         }
-        ListNode<T>* temp = current->next;
-        current->next = temp->next;
+
+        if (current->next == nullptr) {
+            return;  // Element not found
+        }
+
+        Node<T>* temp = current->next;
+        current->next = current->next->next;
         delete temp;
-        Size--;
-    }
-    
-    /**
-     * @brief Remove an element 
-     * @param value - the value to be removed
-     * 
-    */
-    void removeElement(const T& value) {
-        if (!head) {
-            return; // List is empty
-        }
-        if (head->data == value) {
-            ListNode<T>* temp = head;
-            head = head->next;
-            delete temp;
-            Size--;
-            return;
-        }
-        ListNode<T>* current = head;
-        while (current->next) {
-            if (current->next->data == value) {
-                ListNode<T>* temp = current->next;
-                current->next = current->next->next;
-                delete temp;
-                Size--;
-                return;
-            }
-            current = current->next;
-        }
-    }
-    // Get the element at a specific position
-    // Change the return type to a pointer
-    /**
-     * @brief Get the element at a specific position
-     * @param position - the position of the element to get
-     * @return the element at the given position
-     * 
-     * @details Returns a pointer to the element at the given position in the list.
-     * If the position is out of bounds, nullptr is returned.
-     * Otherwise, a pointer to the element at the given position is returned.
-     * @warning This Function Returns a Pointer
-    */
-    T* get(size_t position) const {
-        ListNode<T>* current = head;
-        for (size_t i = 0; i < position; i++) {
-            if (!current) {
-                return nullptr; // Out of bounds
-            }
-            current = current->next;
-        }
-        if (current) {
-            return &(current->data);
-        } else {
-            return nullptr;
-        }
-    }
-
-    T getElement(size_t position) const {
-        ListNode<T>* current = head;
-        for (size_t i = 0; i < position; i++) {
-            if (!current) {
-                return T(); // Out of bounds
-            }
-            current = current->next;
-        }
-        if (current) {
-            return current->data;
-        } else {
-            return T();
-        }
     }
 
     /**
-     * @brief Get the element at a specific position as a String
-     * @param position - the position of the element to get
-     * @return the element at the given position as a String
-     * 
-     * @details Returns the element at the given position in the list.
-     * If the position is out of bounds, nullptr is returned.
-     * Otherwise, the element at the given position is returned as a String
-    */
-    String getAsString(size_t position) const {
-        ListNode<T>* current = head;
-        for (size_t i = 0; i < position; i++) {
-            if (!current) {
-                return nullptr; // Out of bounds
-            }
-            current = current->next;
-        }
-        if (current) {
-            return String(current->data);
-        } else {
-            return nullptr;
-        }
-    }
-    // Check if the list contains a specific element
-    /**
-     * @brief Check if the list contains a specific element
-     * @param value - the value to check for
-     * 
-     * @details Returns true if the list contains the given value, false otherwise.
-     * @return true if the list contains the given value, false otherwise.
-    */
-    bool contains(const T& value) const {
-        ListNode<T>* current = head;
-        while (current) {
-            if (current->data == value) {
+     * @brief Checks if an element exists in the list.
+     * @param data The data to search for.
+     * @return True if the element is found, false otherwise.
+     */
+    bool find(T data) {
+        Node<T>* current = head;
+        while (current != nullptr) {
+            if (current->data == data) {
                 return true;
             }
             current = current->next;
@@ -295,38 +121,35 @@ class ForwardIterator {
         return false;
     }
 
-    // Get the number of elements in the list
     /**
-     * @brief Get the number of elements in the list
-     * @return the number of elements in the list
-    */
-    size_t size() const {
-        return Size;
-    }
-
-    // Check if the list is empty
-    /**
-     * @brief Check if the list is empty
-     * @return true if the list is empty, false otherwise
-    */
-    bool isEmpty() const {
-        return Size == 0;
-    }
-
-    // Clear the list and release memory
-    /**
-     * @brief Clear the list and release memory
-     * 
-     * @details Deletes all nodes in the list and sets the size to 0.
-    */
-    void clear() {
-        while (head) {
-            ListNode<T>* temp = head;
-            head = head->next;
-            delete temp;
+     * @brief Returns the number of elements in the list.
+     * @return The size of the list.
+     */
+    int size() {
+        int count = 0;
+        Node<T>* current = head;
+        while (current != nullptr) {
+            count++;
+            current = current->next;
         }
-        Size = 0;
+        return count;
     }
 
-    
+    /**
+     * @brief Returns the element at the specified index.
+     * @param index The index of the element to retrieve.
+     * @return The element at the specified index.
+     * @throws std::out_of_range If the index is out of bounds.
+     */
+    T get(int index) {
+        if (index < 0 || index >= size()) {
+            throw std::out_of_range("Index out of bounds");
+        }
+
+        Node<T>* current = head;
+        for (int i = 0; i < index; i++) {
+            current = current->next;
+        }
+        return current->data;
+    }
 };

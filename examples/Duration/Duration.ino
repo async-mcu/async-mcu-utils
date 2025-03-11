@@ -5,7 +5,7 @@ using namespace async;
 void setup() {
   Serial.begin(9600);
 
-  // Создаем две длительности
+  // Create two durations
   auto duration1 = Duration::ms(1500); // 1.5 seconds
   auto duration2 = Duration::ms(3000); // 3 seconds
 
@@ -21,21 +21,18 @@ void setup() {
   Serial.print(diff.get(Duration::SECONDS)); // 1.5 seconds (1500 ms)
   Serial.println(" seconds");
 
-  // Создаем длительность
-  auto duration = Duration::ms(3000); // 3 секунды
-
-  // Проверяем, прошло ли 3 секунды с момента старта
-  if (duration.after(async::Duration::now())) {
+  // Check if 3 seconds have passed
+  if (duration2.after(duration1)) {
     Serial.println("3 seconds have not yet passed.");
   } else {
     Serial.println("3 seconds have passed.");
   }
   
-  // Проверяем, прошло ли 2 секунды (в миллисекундах)
-  if (duration.before(Duration::ms(2000))) {
-    Serial.println("2 seconds have not yet passed.");
+  // Check if 3 seconds have passed
+  if (duration1.before(duration2)) {
+    Serial.println("1.5 seconds have not yet passed.");
   } else {
-    Serial.println("2 seconds have passed.");
+    Serial.println("3 seconds have passed.");
   }
 }
 

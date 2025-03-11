@@ -53,6 +53,24 @@ namespace async {
             }
 
             /**
+             * @brief Check if this Duration is after another Duration.
+             * @param other The Duration to compare with.
+             * @return True if this Duration is after `other`, false otherwise.
+             */
+            bool after(const Duration& other) const {
+                return value_ms > other.value_ms;
+            }
+
+            /**
+             * @brief Check if this Duration is before another Duration.
+             * @param other The Duration to compare with.
+             * @return True if this Duration is before `other`, false otherwise.
+             */
+            bool before(const Duration& other) const {
+                return value_ms < other.value_ms;
+            }
+
+            /**
              * @brief Get the duration in the specified time unit.
              * @param type Time unit (default: MILLIS). One of: MICRO, MILLIS, SECONDS, etc.
              * @return Duration value converted to the requested unit.
